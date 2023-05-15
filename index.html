@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Confusion Matrix</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous">
+      <style>
+        .container {
+          width: 50em;
+          border-left: solid 1px grey;
+          border-right: solid 1px grey;
+        }
+        input {
+          width: 6em;
+        }
+        span[title] {
+          text-decoration: underline dotted;
+          color: #008;
+          cursor: pointer;
+        }
+      </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Intro</h1>
+      <p>
+        A confusion matrix is a 2 by 2 matrix that specifies the performance a model relative to the underlying reality
+        being modelled. This page contains a confusion matrix where you can play around with the numbers and see what
+        performance metrics those mumbers produce.
+      </p>
+      <p>
+        It also explains several terms by using an example scenario where you have a tool for detecting whether or not
+        a person has a given disease. The confusion matrix has two axes. The vertical axis represents the output of
+        the model (or tool); for example, whether the tool says the person has the disease or not. The horizontal axes
+        represents "reality"; whether or not the person really does have the disease.
+      </p>
+      <p>
+        In an ideal world, the tool's output is perfectly correlated with reality, such that whenever the tool says the
+        person has the disease, that person truly has the disease, and whenever the person has the disease, the tool
+        correctly says that they have the disease. In practice, tools are not perfect and will sometimes the output it
+        produces will not exactly match reality.
+      </p>
+      <h1>Confusion Matrix</h1>
+      <table class="table" id="confusion-matrix">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th>Reality Positive</th>
+            <th>Reality Negative</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Model Positive</th>
+            <td><input type="number" min="0" value="1" id="TP"> True Positive <span id="TPPercent">25.00</span>%</td>
+            <td><input type="number" min="0" value="1" id="FP"> False Positive <span id="FPPercent">25.00</span>%</td>
+          </tr>
+          <tr>
+            <th>Model Negative</th>
+            <td><input type="number" min="0" value="1" id="FN"> False Negative <span id="FNPercent">25.00</span>%</td>
+            <td><input type="number" min="0" value="1" id="TN"> True Negative <span id="TNPercent">25.00</span>%</td>
+          </tr>
+        </tbody>
+      </table>
+      <h1>Statistics</h1>
+      <table class="table">
+        <colgroup>
+          <col width="20%">
+          <col width="60%">
+          <col width="20%">
+        </colgroup>
+        <thead>
+          <th>Statistic</th>
+          <th>Example Description</th>
+          <th>Value</th>
+        </thead>
+        <tbody>
+          <tr>
+            <th>N</th>
+            <td>Total number of data points</td>
+            <td id="N"></td>
+          </tr>
+          <tr>
+            <th>TP, True Positive</th>
+            <td>People who have the disease and for whom the tool correctly reported that they have the disease</td>
+            <td id="TPStat"></td>
+          </tr>
+          <tr>
+            <th>FP, False Positive</th>
+            <td>People who don't have the disease but for whom the tool incorrectly reported that they have the disease</td>
+            <td id="FPStat"></td>
+          </tr>
+          <tr>
+            <th>TN, True Negative</th>
+            <td>People who don't have the disease and for whom the tool correctly reported that they don't have the disease</td>
+            <td id="TNStat"></td>
+          </tr>
+          <tr>
+            <th>FN, False Negative</th>
+            <td>People who do have the disease but for whom the tool incorrectly reported that they don't have the disease</td>
+            <td id="FNStat"></td>
+          </tr>
+          <tr>
+            <th>Prevalence</th>
+            <td>How many people actually have the disease</td>
+            <td id="PrevalenceStat"></td>
+          </tr>
+          <tr>
+            <th>ACC, Accuracy</th>
+            <td>How often the tool gives the correct answer</td>
+            <td id="ACCStat"></td>
+          </tr>
+          <tr>
+            <th>ERR, Error</th>
+            <td>How often the tool gives the incorrect answer</td>
+            <td id="ERRStat"></td>
+          </tr>
+          <tr>
+            <th>Sensitivity, True Positive Rate</th>
+            <td>When the person has the disease, how often does the tool correctly report they have the disease</td>
+            <td id="SensStat"></td>
+          </tr>
+          <tr>
+            <th>Specificity, True Negative Rate</th>
+            <td>When the person does not have the disease, how often does the tool correctly report they don't have the disease</td>
+            <td id="SpecStat"></td>
+          </tr>
+          <tr>
+            <th>PPV, Positive Predictive Value</th>
+            <td>When the tool reports a person has the disease, how often does the person actually have the disease</td>
+            <td id="PPVStat"></td>
+          </tr>
+          <tr>
+            <th>NPV, Negative Predictive Value</th>
+            <td>When the tool reports a person does not have the disease, how often does the person actually not have the disease</td>
+            <td id="NPVStat"></td>
+          </tr>
+        </tbody>
+      </table>
+      <h1>Interesting Example</h1>
+      <p>
+        Consider a fairly rare disease, on whose prevalence is around 0.01%, or 1 out of every 10'000 people have the disease. Now
+        consider a tool whose accuracy is around 99%, whose sensitivity is around 99%, and whose specificity is around 99%. That
+        is to say: 99% of the time, this tool gives the correct answer; when the person has the disease, 99% of the time the tool
+        correctly reports that they have the disease; and when the person does not have the disease, 99% of the time the tool
+        correctly reports that the person does not have the disease. Now imagine we use this tool to diagnose someone, and the tool
+        reports that the person has the disease; what is the probability that the person truly does have the disease?
+      </p>
+      <p>
+        You can try out this example by putting 100 for the true positive count, 10'000 for the false positive count, 1 for the
+        false negative count, and 1'000'000 for the true negative count. You can then scroll through the statistics and confirm
+        that with these numbers, the prevalence is around 0.01%, the accuracy is around 99%, the sensitivity is around 99%, and
+        the specificity is around 99%. The value you're interested in to answer your question is the PPV. Is it higher, or lower
+        than you expected?
+      </p>
+    </div>
+    <script>
+      (() => {
+        'use strict';
+        const PRECISION = 3;
+        function update() {
+          const TP = parseInt(document.getElementById('TP').value, 10);
+          const FP = parseInt(document.getElementById('FP').value, 10);
+          const TN = parseInt(document.getElementById('TN').value, 10);
+          const FN = parseInt(document.getElementById('FN').value, 10);
+          const N = TP + FP + TN + FN;
+          if (N == 0) {
+            //TODO
+          }
+          document.getElementById('N').innerText = N;
+          document.getElementById('TPPercent').innerText = (100 * TP / N).toPrecision(PRECISION);
+          document.getElementById('FPPercent').innerText = (100 * FP / N).toPrecision(PRECISION);
+          document.getElementById('TNPercent').innerText = (100 * TN / N).toPrecision(PRECISION);
+          document.getElementById('FNPercent').innerText = (100 * FN / N).toPrecision(PRECISION);
+          document.getElementById('TPStat').innerText = `${TP} or ${(100 * TP / N).toPrecision(PRECISION)}%`;
+          document.getElementById('FPStat').innerText = `${FP} or ${(100 * FP / N).toPrecision(PRECISION)}%`;
+          document.getElementById('TNStat').innerText = `${TN} or ${(100 * TN / N).toPrecision(PRECISION)}%`;
+          document.getElementById('FNStat').innerText = `${FN} or ${(100 * FN / N).toPrecision(PRECISION)}%`;
+          document.getElementById('PrevalenceStat').innerText = `(TP+FN)/N = (${TP}+${FN})/${N} = ${(100*(TP+FN)/N).toPrecision(PRECISION)}%`;
+          document.getElementById('ACCStat').innerText = `(TP+TN)/N = (${TP}+${TN})/${N} = ${(100*(TP+TN)/N).toPrecision(PRECISION)}%`;
+          document.getElementById('ERRStat').innerText = `(FP+FN)/N = (${FP}+${FN})/${N} = ${(100*(FP+FN)/N).toPrecision(PRECISION)}%`;
+          document.getElementById('SensStat').innerText = `TP/(TP+FN) = ${TP}/(${TP}+${FN}) = ${(100*TP/(TP+FN)).toPrecision(PRECISION)}%`;
+          document.getElementById('SpecStat').innerText = `TN/(TN+FP) = ${TN}/(${TN}+${FP}) = ${(100*TN/(TN+FP)).toPrecision(PRECISION)}%`;
+          document.getElementById('PPVStat').innerText = `TP/(TP+FP) = ${TP}/(${TP}+${FP}) = ${(100*TP/(TP+FP)).toPrecision(PRECISION)}%`;
+          document.getElementById('NPVStat').innerText = `TN/(TN+FN) = ${TN}/(${TN}+${FN}) = ${(100*TN/(TN+FN)).toPrecision(PRECISION)}%`;
+        }
+        document.getElementById("confusion-matrix").addEventListener('input', update);
+        update();
+      })();
+    </script>
+  </body>
+</html>
